@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: ${ORDERFLOW_DB_URL:jdbc:postgresql://localhost:5432/orderflow}
+    username: ${ORDERFLOW_DB_USER:orderflow}
+    password: ${ORDERFLOW_DB_PASSWORD}
+server:
+  address: 127.0.0.1
