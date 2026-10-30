@@ -16,11 +16,11 @@ A B2B fulfillment system must list customer purchase orders with their item quan
 | --- | --- | --- |
 | Orders | Paginated Spring Data `Page` | Same paginated `Page` |
 | Order lines | One lazy SELECT per order | One `IN (:orderIds)` scalar projection |
-| Typical DB statements for 20 orders | ~22 (page + count + 20) | ~3 (page + count + one batch) |
+| Prepared SQL statements in 20-order CI fixture | **22 measured** | **3 measured** |
 | API response structure | `PageResult<OrderSummary>` | Identical |
 | Guard against regression | None | Integration test asserts bounded count and output equivalence |
 
-These numbers are **expected counts from the code path**, not performance measurements. The integration test prints actual prepared-statement counts when `mvn test` runs. **Do not claim a measured percentage reduction before running tests and collecting the output.** Wall-clock benchmarks depend on workload, hardware, latency, indexes, caching, and data distribution.
+**Verified in GitHub Actions on October 30, 2026:** The H2 integration test counted 22 prepared SQL statements on the legacy route and 3 on the optimized route (86.4% fewer statements) while asserting identical JSON responses. This is not a measured 86.4% reduction in latency. [View the passing CI run](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41037257946).
 
 ## Stack
 
@@ -95,7 +95,7 @@ Valid lifecycle: `NEW` -> `PROCESSING` -> `SHIPPED`; `NEW` or `PROCESSING` can g
 - N+1 regression: compares both API responses and their Hibernate prepared-statement counts on a page of 20 orders.
 - CI: `.github/workflows/ci.yml` runs `mvn verify` on push and pull requests.
 
-The environment used to create this package had Java 21 but no Maven or dependency-network access. **Only the dependency-free domain code could be executed here.** The Spring integration tests are provided as an executable specification and must pass in Maven CI before this case study should be published as fully verified. See `docs/VALIDATION.md`.
+**CI verified:** Maven build succeeded on Java 21: 6 tests, 0 failures, 0 errors, 0 skipped. The Spring integration tests used H2 and Flyway. PostgreSQL execution and production security have not been verified. See `docs/VALIDATION.md`.
 
 ## Architecture
 
@@ -114,6 +114,6 @@ The optimized read model pages order headers first, then loads only fields neede
 
 ## Portfolio packaging
 
-See [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) and [`docs/UPWORK_PORTFOLIO.md`](docs/UPWORK_PORTFOLIO.md). Keep this repository public only after CI passes. Do not represent it as code from an employer or imply measured speedups without test output.
+See [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) and [`docs/UPWORK_PORTFOLIO.md`](docs/UPWORK_PORTFOLIO.md). Keep this repository private until the code and documentation receive a final review and the owner approves publication. Do not imply SQL statement counts measure end-to-end latency.
 
 **License:** MIT.
