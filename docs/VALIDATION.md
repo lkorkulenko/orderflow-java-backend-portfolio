@@ -1,17 +1,27 @@
-# Verification status and reproducibility
+# Verification status
 
-## Completed in the creation environment
+## Verified in GitHub Actions (October 30, 2026)
 
-- Java 21 compiler successfully compiled the dependency-free domain classes and standalone smoke test.
-- The standalone smoke test checked decimal multiplication, permitted transitions, and invalid transition rejection.
+[Successful run #41037257946](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41037257946) on Java 21 against commit `b151d5e`:
 
-## Not yet verified in the creation environment
+- Maven `verify`: **BUILD SUCCESS**
+- **6 tests**, 0 failures, 0 errors, 0 skipped
+- H2-backed Spring HTTP integration tests with Flyway
+- `SQL statements for 20-order page: legacy=22, optimized=3`
+- Optimized and legacy JSON responses asserted identical in the tested fixture
+- Duplicate references and invalid order transitions return HTTP 409 in tests
 
-- Full Spring/Maven build and HTTP integration suite. Maven was not installed, and repository access was unavailable.
-- Hibernate SQL statement counts. Expected query counts in README are design expectations, not measured results.
-- PostgreSQL docker environment. Use it as an optional second-stage check after H2 tests.
+**Interpretation:** 19 fewer Hibernate prepared SQL statements (86.4%) for this 20-order test fixture. This is **not** a measured improvement in API latency, throughput, or production performance.
 
-## Validation on your Windows workstation
+## Still outstanding
+
+- Human review of implementation and code quality
+- PostgreSQL-backed validation (CI currently tests with H2)
+- Local Windows end-to-end demonstration
+- Production security concerns: authentication, authorization, audit logging and abuse protection
+- Owner approval before public release
+
+## Reproduce on Windows
 
 ```powershell
 java -version
@@ -20,14 +30,4 @@ mvn -version
 mvn -B -ntp clean verify
 ```
 
-Inspect the test console line `SQL statements for 20-order page: legacy=..., optimized=...`.
-
-For this portfolio project's first iteration, acceptance criteria are:
-
-1. All Maven tests pass on Java 21 and Boot 3.5.16.
-2. The optimized and legacy JSON responses match for the same fixture.
-3. Legacy SQL prepared-statement count >=21; optimized <=3 for 20 orders.
-4. Invalid order transitions and duplicate references produce HTTP 409.
-5. A sample order can be created/listed/updated through PowerShell.
-
-If any acceptance criterion fails, fix the implementation before making the repository public or using the results on Upwork. The CI workflow is prepared to run Maven verification after your first push.
+Optional PostgreSQL setup is documented in the root README.
