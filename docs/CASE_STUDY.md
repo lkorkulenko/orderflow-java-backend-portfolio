@@ -1,41 +1,44 @@
 # Case study: Removing N+1 database queries from a Java order API
 
-**Project type:** Independent portfolio demonstration (fictional B2B order service). No client source code, data, branding, or private architecture has been used.
+**Project type:** Independent portfolio demonstration (fictional B2B order service). No employer or client code, data, or branding.
 
 ## Problem
+An order-list endpoint fetched a page of order headers, then lazily loaded the lines for each order. With 20 orders on one page, the legacy version issued 22 prepared SQL statements in the integration test.
 
-An existing order-list API retrieves a page of order headers. Its mapper then navigates each JPA order's lazy `lines` collection to calculate totals. Because each collection is loaded separately, the number of queries grows approximately linearly with page size. On a remote database this creates avoidable latency.
+## Approach
+1. Preserve the same deterministic paginated order listing and JSON response.
+2. Query order headers and their total count using normal Spring Data pagination.
+3. Fetch the line data for that page in one scalar projection query filtered by order IDs.
+4. Calculate quantities and monetary totals using exact `BigDecimal` arithmetic.
+5. Compare the legacy and optimized JSON and instrument Hibernate prepared-statement counts in an automated integration test.
 
-## Engineering approach
+## Verified result — GitHub Actions
+On October 30, 2026, GitHub Actions completed `mvn -B -ntp verify` successfully on Java 21.
 
-1. Keep the legacy endpoint available for controlled comparison.
-2. Keep deterministic, database-backed pagination on purchase orders.
-3. Load only the line fields required for a summary with a single batch query using the page's order IDs.
-4. Aggregate quantities and totals with `BigDecimal` in the service layer.
-5. Preserve API response shape and compare old/new outputs in integration tests.
-6. Use Hibernate Statistics to assert a bound on prepared statements, not only subjective timing.
+| Metric | Legacy endpoint | Optimized endpoint |
+|---|---:|---:|
+| Prepared SQL statements for 20-order H2 test page | 22 | 3 |
+| API response | Same JSON | Same JSON |
 
-## Safeguards unrelated to N+1
+That is **19 fewer statements, or an 86.4% reduction in statements for this test case**. The full Maven suite passed: **6 tests, 0 failures, 0 errors, 0 skipped**.
 
-- Flyway schema migrations with referential integrity and money constraints.
-- Unique customer order reference, handled as an HTTP conflict.
-- Validated API inputs with structured problem responses.
-- Transition rules for order lifecycle, tested without Spring.
-- Optimistic locking via JPA `@Version` to prevent silent lost updates.
-- `open-in-view=false` to keep persistence access inside service transactions.
+[View the successful CI run](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41037257946).
 
-## Evidence checklist (fill after CI)
+This is **not a measured response-time or throughput improvement**. No controlled wall-clock benchmark, external PostgreSQL run, or realistic network-latency test has been performed.
 
-- [ ] `mvn -B -ntp verify` completes successfully.
-- [ ] SQL count output copied from `OrderApiIntegrationTest` (legacy vs modern).
-- [ ] Test result file or CI link attached as evidence.
-- [ ] If discussing latency, collect controlled multi-run benchmarks with warmup and realistic database latency.
-- [ ] GitHub repository URL added to Upwork portfolio.
+## Other engineering safeguards
+- Flyway migration and relational constraints
+- Input validation and structured HTTP problem details
+- Business-state transitions and exact monetary arithmetic
+- Optimistic locking using JPA `@Version`
+- `open-in-view=false`
+- Unit tests and MockMvc API integration tests
 
-## Limitations and trade-offs
+## Limitations
+This is intentionally a local portfolio demonstration, not a deployable commercial service. There is no authentication, authorization, audit trail, rate limiting, or hardened production security configuration. The deliberately inefficient legacy endpoint is retained only for the comparison. The batch read currently gathers order-line projections in memory for a bounded page (max 100 orders); at larger scales a SQL aggregate or materialized totals might be preferable. SQL counts can vary across engines and ORM versions.
 
-The batch read strategy holds one page of line projections in memory. It is suitable for modest bounded pages (maximum 100 orders here), but could require database-side aggregation or denormalized totals at high scale. The sample does not address authentication, distributed tracing, object-level authorization, audit requirements, backpressure, or production observability. The intentionally slow legacy endpoint must not be exposed in a production system.
-
-## Outcome
-
-The code demonstrates a bounded-query design and an automated regression assertion. Actual before/after SQL counts will be recorded when the Spring integration suite is executed. **No measured speedup is currently claimed.**
+## Next review steps
+- Review implementation and tests for further edge cases and risks
+- Optionally run the same suite against a real PostgreSQL instance
+- Prepare an illustrative architecture diagram and CI evidence for the public portfolio
+- Make the repository public only after final code and documentation review
