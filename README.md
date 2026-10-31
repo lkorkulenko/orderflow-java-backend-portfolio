@@ -1,5 +1,9 @@
 # OrderFlow — Java Backend Modernization Case Study
 
+[![Build and verify](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/workflows/ci.yml)
+
+**Java 21 · Spring Boot · Hibernate/JPA · REST · SQL performance · Automated tests**
+
 **Original demonstration project; not a paid client deliverable.**
 
 OrderFlow is a small B2B order-processing API built to demonstrate how a senior backend engineer diagnoses and fixes an **N+1 database-query defect** without breaking the API response. It also illustrates reliable domain state transitions, money arithmetic, schema migrations, validation, optimistic locking, and integration tests.
@@ -21,6 +25,24 @@ A B2B fulfillment system must list customer purchase orders with their item quan
 | Guard against regression | None | Integration test asserts bounded count and output equivalence |
 
 **Verified in GitHub Actions on October 30, 2026:** The H2 integration test counted 22 prepared SQL statements on the legacy route and 3 on the optimized route (86.4% fewer statements) while asserting identical JSON responses. This is not a measured 86.4% reduction in latency. [View the passing CI run](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41037257946).
+
+### How the refactoring changes database access
+
+```mermaid
+flowchart LR
+    subgraph L["BEFORE — N+1 queries"]
+        direction TB
+        L1["Find paginated orders"] --> L2["Load each order's lines"]
+        L2 --> L3["20 additional SELECTs"]
+    end
+    subgraph R["AFTER — batched projection"]
+        direction TB
+        R1["Find same paginated orders"] --> R2["Collect 20 order IDs"]
+        R2 --> R3["One SELECT for line data"]
+    end
+```
+
+The legacy and optimized endpoints return the **same JSON** for the measured test page. The observed improvement concerns the **number of SQL statements**, not a measured response-time improvement.
 
 ## Stack
 
@@ -95,7 +117,7 @@ Valid lifecycle: `NEW` -> `PROCESSING` -> `SHIPPED`; `NEW` or `PROCESSING` can g
 - N+1 regression: compares both API responses and their Hibernate prepared-statement counts on a page of 20 orders.
 - CI: `.github/workflows/ci.yml` runs `mvn verify` on push and pull requests.
 
-**CI verified:** Maven build succeeded on Java 21: 6 tests, 0 failures, 0 errors, 0 skipped. The Spring integration tests used H2 and Flyway. PostgreSQL execution and production security have not been verified. See `docs/VALIDATION.md`.
+**CI verified:** The initial six-test suite passed on Java 21; the merged input-validation enhancement passed seven tests. The release-readiness branch additionally tests null/empty order lines. The Spring integration suite uses H2 and Flyway; PostgreSQL execution and production security have not been verified. See `docs/VALIDATION.md`.
 
 ## Architecture
 
@@ -114,6 +136,6 @@ The optimized read model pages order headers first, then loads only fields neede
 
 ## Portfolio packaging
 
-See [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) and [`docs/UPWORK_PORTFOLIO.md`](docs/UPWORK_PORTFOLIO.md). Keep this repository private until the code and documentation receive a final review and the owner approves publication. Do not imply SQL statement counts measure end-to-end latency.
+See [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) and [`docs/UPWORK_PORTFOLIO.md`](docs/UPWORK_PORTFOLIO.md). This repository is an **independent educational demonstration**, not commercial or employer code. The owner may publish it after reviewing the source, license, and README. It is **not production-ready**, and SQL-statement counts must not be presented as end-to-end latency measurements.
 
 **License:** MIT.

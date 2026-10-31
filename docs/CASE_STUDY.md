@@ -37,8 +37,18 @@ This is **not a measured response-time or throughput improvement**. No controlle
 ## Limitations
 This is intentionally a local portfolio demonstration, not a deployable commercial service. There is no authentication, authorization, audit trail, rate limiting, or hardened production security configuration. The deliberately inefficient legacy endpoint is retained only for the comparison. The batch read currently gathers order-line projections in memory for a bounded page (max 100 orders); at larger scales a SQL aggregate or materialized totals might be preferable. SQL counts can vary across engines and ORM versions.
 
-## Next review steps
-- Review implementation and tests for further edge cases and risks
-- Optionally run the same suite against a real PostgreSQL instance
-- Prepare an illustrative architecture diagram and CI evidence for the public portfolio
-- Make the repository public only after final code and documentation review
+## Release review notes
+
+- PR #1 was merged into `main`: added SKU length and decimal precision checks with a passing regression test.
+- An additional release-readiness change rejects null line items and empty order-line collections at the request boundary.
+- The root README now includes a before/after query-flow diagram and CI badge.
+- The repository deliberately uses local-only binding and contains no client/employer datasets or credentials.
+
+## Outside the scope of this demonstration
+
+- PostgreSQL-backed automated verification (currently H2)
+- Production authentication, authorization, abuse prevention and secrets management
+- Measured wall-clock latency, throughput and load testing
+- Professional production deployment and observability
+
+None of these unimplemented production capabilities are being represented as delivered.

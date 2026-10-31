@@ -37,4 +37,4 @@ This is an **independent, original demonstration**, not client work or a product
 - Explicitly label this as an independent demonstration using fictional data.
 - Do **not** imply that the code came from a past client, VARTEQ/Follett, or an actual production incident.
 - Do **not** claim that 86.4% fewer SQL statements means an 86.4% response-time speedup.
-- The repository is private while the final review is in progress; do not paste this private link into an Upwork portfolio entry that clients need to access.
+- Confirm the repository is public and anonymously viewable before linking it in an Upwork portfolio entry. Otherwise clients will not be able to see it.
