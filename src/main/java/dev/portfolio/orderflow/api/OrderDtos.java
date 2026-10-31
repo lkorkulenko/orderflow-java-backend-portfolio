@@ -10,9 +10,9 @@ import java.util.List;
 public final class OrderDtos {
     private OrderDtos() { }
 
-    public record LineInput(@NotBlank String sku,
+    public record LineInput(@NotBlank @Size(max = 80) String sku,
                             @Min(1) int quantity,
-                            @NotNull @DecimalMin("0.01") BigDecimal unitPrice) { }
+                            @NotNull @DecimalMin("0.01") @Digits(integer = 10, fraction = 2) BigDecimal unitPrice) { }
 
     public record CreateOrder(@NotBlank @Size(max = 80) String clientReference,
                               @NotEmpty List<@Valid LineInput> lines) { }
