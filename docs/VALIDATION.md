@@ -19,7 +19,7 @@
 - PostgreSQL-backed validation (CI currently tests with H2)
 - Local Windows end-to-end demonstration
 - Production security concerns: authentication, authorization, audit logging and abuse protection
-- Owner approval before public release
+- Owner approval before public release and manual visibility change in GitHub settings
 
 ## Reproduce on Windows
 

@@ -114,6 +114,22 @@ class OrderApiIntegrationTest {
         assertThat(orders.count()).isZero();
     }
 
+    @Test void rejectsNullLineItemsAndEmptyCollections() throws Exception {
+        String nullLine = """
+            {"clientReference":"NULL-LINE","lines":[null]}
+            """;
+        mvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(nullLine))
+            .andExpect(status().isBadRequest());
+
+        String emptyLines = """
+            {"clientReference":"NO-LINES","lines":[]}
+            """;
+        mvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(emptyLines))
+            .andExpect(status().isBadRequest());
+
+        assertThat(orders.count()).isZero();
+    }
+
     @Test void emptyPageAndMissingOrderAreHandled() throws Exception {
         mvc.perform(get("/api/orders")).andExpect(status().isOk())
             .andExpect(jsonPath("$.totalElements").value(0));

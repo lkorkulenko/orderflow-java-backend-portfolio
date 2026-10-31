@@ -15,7 +15,7 @@ public final class OrderDtos {
                             @NotNull @DecimalMin("0.01") @Digits(integer = 10, fraction = 2) BigDecimal unitPrice) { }
 
     public record CreateOrder(@NotBlank @Size(max = 80) String clientReference,
-                              @NotEmpty List<@Valid LineInput> lines) { }
+                              @NotEmpty List<@NotNull @Valid LineInput> lines) { }
 
     public record ChangeStatus(@NotNull OrderStatus status) { }
 
