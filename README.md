@@ -117,7 +117,7 @@ Valid lifecycle: `NEW` -> `PROCESSING` -> `SHIPPED`; `NEW` or `PROCESSING` can g
 - N+1 regression: compares both API responses and their Hibernate prepared-statement counts on a page of 20 orders.
 - CI: `.github/workflows/ci.yml` runs `mvn verify` on push and pull requests.
 
-**CI verified:** The initial six-test suite passed on Java 21; the merged input-validation enhancement passed seven tests. The release-readiness branch additionally tests null/empty order lines. The Spring integration suite uses H2 and Flyway; PostgreSQL execution and production security have not been verified. See `docs/VALIDATION.md`.
+**Latest CI verification (October 31, 2026):** Java 21 / Maven `verify` completed successfully with **8 tests, 0 failures, 0 errors, 0 skipped**. The tests cover invalid order lines and confirm unchanged legacy/optimized responses and 22 vs 3 prepared SQL statements on the 20-order H2 fixture. [Successful verification run](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41202708566). PostgreSQL integration and production security have not been verified. See `docs/VALIDATION.md`.
 
 ## Architecture
 

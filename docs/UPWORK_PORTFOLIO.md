@@ -20,11 +20,11 @@ This is an **independent, original demonstration**, not client work or a product
 
 **My approach.** I preserved the paginated API response, replaced per-order lazy loading with a single batched scalar read for each page, and added tests comparing both JSON outputs and Hibernate's prepared-statement counts.
 
-**Verified result.** Against the H2-backed 20-order fixture in GitHub Actions, the legacy and optimized implementations issued 22 and 3 prepared SQL statements, respectively: **19 fewer statements / 86.4% reduction in statement count**. The original full Maven verification passed **6 tests with no failures**, with a follow-up input-validation pull request passing **7 tests**. These results do not quantify response-time or production throughput changes.
+**Verified result.** Against the H2-backed 20-order fixture in GitHub Actions, the legacy and optimized implementations issued 22 and 3 prepared SQL statements, respectively: **19 fewer statements / 86.4% reduction in statement count**. The latest GitHub Actions verification passed **8 tests with no failures** after the input-validation enhancements were merged. These results do not quantify response-time or production throughput changes.
 
 **Beyond the performance fix.** The sample contains Flyway migrations, JPA entities, REST APIs, input validation, business-state transitions, optimistic locking and reproducible CI.
 
-**Evidence:** [Initial verified GitHub Actions run](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41037257946); [Input-validation review CI](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41200057283).
+**Evidence:** [Verified 8-test CI run](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41202708566); [Root case study](../docs/CASE_STUDY.md).
 
 ## Suggested portfolio media
 

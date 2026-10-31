@@ -20,9 +20,9 @@ On October 30, 2026, GitHub Actions completed `mvn -B -ntp verify` successfully 
 | Prepared SQL statements for 20-order H2 test page | 22 | 3 |
 | API response | Same JSON | Same JSON |
 
-That is **19 fewer statements, or an 86.4% reduction in statements for this test case**. The full Maven suite passed: **6 tests, 0 failures, 0 errors, 0 skipped**.
+That is **19 fewer statements, or an 86.4% reduction in statements for this test case**. The latest verification after both quality pull requests passed **8 tests, 0 failures, 0 errors, 0 skipped**, with the same SQL statement counts.
 
-[View the successful CI run](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41037257946).
+[View the successful 8-test CI run](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41202708566).
 
 This is **not a measured response-time or throughput improvement**. No controlled wall-clock benchmark, external PostgreSQL run, or realistic network-latency test has been performed.
 
@@ -40,7 +40,7 @@ This is intentionally a local portfolio demonstration, not a deployable commerci
 ## Release review notes
 
 - PR #1 was merged into `main`: added SKU length and decimal precision checks with a passing regression test.
-- An additional release-readiness change rejects null line items and empty order-line collections at the request boundary.
+- PR #2 was merged into `main`: rejects null line items and empty order-line collections at the request boundary, with an additional passing regression test.
 - The root README now includes a before/after query-flow diagram and CI badge.
 - The repository deliberately uses local-only binding and contains no client/employer datasets or credentials.
 
