@@ -1,17 +1,40 @@
-# Upwork portfolio entry — ready to copy once verified
+# Upwork portfolio entry — prepared for publication after owner review
 
-**Title (under 40 characters):** Java Backend Performance Modernization
+This is an **independent, original demonstration**, not client work or a production deployment.
 
-**Role:** Java Backend Engineer | Architecture, JPA, API Testing
+## Portfolio entry
 
-**Short overview (under 300 characters):**
+**Title:** Java Backend Performance Modernization
 
-> Independent Java/Spring Boot case study: diagnosed a legacy-style N+1 order-query pattern, replaced per-order loads with a batched read model, preserved API responses, and added integration tests for query counts, validation, and business rules.
+**Role:** Java Backend Engineer — API Architecture, JPA, Automated Testing
 
-**Five skill tags to consider:** Java, Spring Boot, Hibernate, RESTful API, PostgreSQL.
+**Short overview (Upwork):**
 
-**What to include as portfolio media:** a one-page diagram of the legacy and optimized query flow, a screenshot of passing CI, and the public README/CASE_STUDY. Do not claim a verified benchmark until tests run.
+> Built an independent Java/Spring Boot case study to diagnose and fix an N+1 query problem. In CI, a 20-order API listing dropped from 22 to 3 Hibernate prepared SQL statements (86.4% fewer), with identical JSON responses and automated regression tests. This measures queries, not response time.
 
-**GitHub link:** https://github.com/lkorkulenko/orderflow-java-backend-portfolio (private until verified)
+**Relevant skills:** Java, Spring Boot, Hibernate, RESTful API, Unit Testing.
 
-**Important:** This is an original personal demonstration, not an Upwork client job. Do not associate it with an existing client contract.
+## Detailed case study
+
+**Problem.** A realistic B2B order-list API loaded each order's lines lazily, introducing an extra SQL statement per order.
+
+**My approach.** I preserved the paginated API response, replaced per-order lazy loading with a single batched scalar read for each page, and added tests comparing both JSON outputs and Hibernate's prepared-statement counts.
+
+**Verified result.** Against the H2-backed 20-order fixture in GitHub Actions, the legacy and optimized implementations issued 22 and 3 prepared SQL statements, respectively: **19 fewer statements / 86.4% reduction in statement count**. The original full Maven verification passed **6 tests with no failures**, with a follow-up input-validation pull request passing **7 tests**. These results do not quantify response-time or production throughput changes.
+
+**Beyond the performance fix.** The sample contains Flyway migrations, JPA entities, REST APIs, input validation, business-state transitions, optimistic locking and reproducible CI.
+
+**Evidence:** [Initial verified GitHub Actions run](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41037257946); [Input-validation review CI](https://github.com/lkorkulenko/orderflow-java-backend-portfolio/actions/runs/41200057283).
+
+## Suggested portfolio media
+
+1. A simple before/after diagram comparing 20 lazy loads versus one batched read.
+2. A screenshot of the successful CI run with statement-count output.
+3. A repository link after the owner authorizes making the repo public.
+
+## Honesty and disclosure
+
+- Explicitly label this as an independent demonstration using fictional data.
+- Do **not** imply that the code came from a past client, VARTEQ/Follett, or an actual production incident.
+- Do **not** claim that 86.4% fewer SQL statements means an 86.4% response-time speedup.
+- The repository is private while the final review is in progress; do not paste this private link into an Upwork portfolio entry that clients need to access.
