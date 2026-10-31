@@ -91,6 +91,29 @@ class OrderApiIntegrationTest {
             .andExpect(status().isBadRequest());
     }
 
+    @Test void rejectsValuesThatWouldExceedDatabaseColumnLimits() throws Exception {
+        String tooLongSku = "X".repeat(81);
+        String skuPayload = """
+            {"clientReference":"SKU-TOO-LONG","lines":[{"sku":"%s","quantity":1,"unitPrice":1.00}]}
+            """.formatted(tooLongSku);
+        mvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(skuPayload))
+            .andExpect(status().isBadRequest());
+
+        String excessiveScale = """
+            {"clientReference":"MONEY-SCALE","lines":[{"sku":"SKU-1","quantity":1,"unitPrice":1.234}]}
+            """;
+        mvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(excessiveScale))
+            .andExpect(status().isBadRequest());
+
+        String excessivePrecision = """
+            {"clientReference":"MONEY-PRECISION","lines":[{"sku":"SKU-1","quantity":1,"unitPrice":10000000000.00}]}
+            """;
+        mvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(excessivePrecision))
+            .andExpect(status().isBadRequest());
+
+        assertThat(orders.count()).isZero();
+    }
+
     @Test void emptyPageAndMissingOrderAreHandled() throws Exception {
         mvc.perform(get("/api/orders")).andExpect(status().isOk())
             .andExpect(jsonPath("$.totalElements").value(0));
