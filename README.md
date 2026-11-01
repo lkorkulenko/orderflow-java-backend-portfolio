@@ -136,6 +136,6 @@ The optimized read model pages order headers first, then loads only fields neede
 
 ## Portfolio packaging
 
-See [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) and [`docs/UPWORK_PORTFOLIO.md`](docs/UPWORK_PORTFOLIO.md). This repository is an **independent educational demonstration**, not commercial or employer code. The owner may publish it after reviewing the source, license, and README. It is **not production-ready**, and SQL-statement counts must not be presented as end-to-end latency measurements.
+See [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) and [`docs/UPWORK_PORTFOLIO.md`](docs/UPWORK_PORTFOLIO.md). This repository is an **independent educational demonstration**, not commercial or employer code. The repository is **public**, with source, tests, and CI evidence available for independent review. It is **not production-ready**, and SQL-statement counts must not be presented as end-to-end latency measurements.
 
 **License:** MIT.
