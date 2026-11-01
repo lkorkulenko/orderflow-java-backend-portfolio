@@ -1,4 +1,4 @@
-# Upwork portfolio entry — prepared for publication after owner review
+# Upwork portfolio entry — public repository
 
 This is an **independent, original demonstration**, not client work or a production deployment.
 
@@ -30,11 +30,11 @@ This is an **independent, original demonstration**, not client work or a product
 
 1. A simple before/after diagram comparing 20 lazy loads versus one batched read.
 2. A screenshot of the successful CI run with statement-count output.
-3. A repository link after the owner authorizes making the repo public.
+3. The [public OrderFlow GitHub repository](https://github.com/lkorkulenko/orderflow-java-backend-portfolio).
 
 ## Honesty and disclosure
 
 - Explicitly label this as an independent demonstration using fictional data.
 - Do **not** imply that the code came from a past client, VARTEQ/Follett, or an actual production incident.
 - Do **not** claim that 86.4% fewer SQL statements means an 86.4% response-time speedup.
-- Confirm the repository is public and anonymously viewable before linking it in an Upwork portfolio entry. Otherwise clients will not be able to see it.
+- Repository visibility was confirmed **public** via GitHub API on November 1, 2026. Check the link from a signed-out browser before using it in proposals.
